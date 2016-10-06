@@ -2,7 +2,7 @@
 
 namespace DnsApi.DnsRecords
 {
-    public class DnsAaaaRecord : IDnsRecord
+    public class DnsAaaaRecord : DnsRecordBase
     {
         public DnsAaaaRecord(IPAddress iPv6Address)
         {
@@ -11,5 +11,10 @@ namespace DnsApi.DnsRecords
 
         // ReSharper disable once InconsistentNaming
         public IPAddress IPv6Address { get; private set; }
+
+        public override string ToString()
+        {
+            return IPv6Address.ToString();
+        }
     }
 }

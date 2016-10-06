@@ -49,6 +49,16 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="CLDAP.NET\CLDAP.NET.csproj">
+      <Project>{9d3f6286-0858-4ae7-98ab-b1022df43e55}</Project>
+      <Name>CLDAP.NET</Name>
+    </ProjectReference>
+    <ProjectReference Include="DnsApi\DnsApi.csproj">
+      <Project>{ab311bd5-9008-40ab-81d1-a58dbb707928}</Project>
+      <Name>DnsApi</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -50,7 +50,7 @@
     <Compile Include="DnsRecords\DnsPtrRecord.cs" />
     <Compile Include="DnsRecords\DnsSrvRecord.cs" />
     <Compile Include="DnsRecords\DnsTxtRecord.cs" />
-    <Compile Include="DnsRecords\IDnsRecord.cs" />
+    <Compile Include="DnsRecords\DnsRecordBase.cs" />
     <Compile Include="IPAddressHelpers.cs" />
     <Compile Include="PInvoke.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

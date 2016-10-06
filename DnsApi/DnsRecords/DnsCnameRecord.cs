@@ -1,6 +1,6 @@
 ﻿namespace DnsApi.DnsRecords
 {
-    class DnsCnameRecord : IDnsRecord
+    class DnsCnameRecord : DnsRecordBase
     {
         public DnsCnameRecord(string nameHost)
         {
@@ -8,5 +8,10 @@
         }
 
         public string NameHost { get; private set; }
+
+        public override string ToString()
+        {
+            return NameHost;
+        }
     }
 }

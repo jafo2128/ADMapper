@@ -6,7 +6,7 @@ using DnsApi.DnsRecords;
 
 namespace DnsApi
 {
-    public class DnsQuery
+    public static class DnsQuery
     {
         private static PInvoke.DnsRecordTypes ResolveFromType(Type t)
         {
@@ -29,7 +29,7 @@ namespace DnsApi
             return PInvoke.DnsRecordTypes.DNS_TYPE_ANY;
         }
 
-        public IList<T> LookUp<T>(string name, bool bypassResolverCache) where T : IDnsRecord
+        public static IList<T> LookUp<T>(string name, bool bypassResolverCache) where T : DnsRecordBase
         {
 
             var internalRecordType = ResolveFromType(typeof(T));
@@ -44,31 +44,31 @@ namespace DnsApi
                     new Win32Exception(status));
             }
 
-            var recordsFound = new List<IDnsRecord>();
+            var recordsFound = new List<DnsRecordBase>();
             try
             {
                 PInvoke.DNS_RECORD record;
                 for (var iterator = pResults; !iterator.Equals(IntPtr.Zero); iterator = record.pNext)
                 {
                     record = (PInvoke.DNS_RECORD) Marshal.PtrToStructure(iterator, typeof (PInvoke.DNS_RECORD));
-                    IDnsRecord recordFound;
+                    DnsRecordBase recordBaseFound;
                     switch (record.wType)
                     {
                         case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_A:
-                            recordFound =
+                            recordBaseFound =
                                 new DnsARecord(IPAddressHelpers.ConvertUintToIpAddress(record.Data.A.IpAddress));
                             break;
                         case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_NS:
-                            recordFound = new DnsNsRecord(Marshal.PtrToStringAuto(record.Data.NS.pNameHost));
+                            recordBaseFound = new DnsNsRecord(Marshal.PtrToStringAuto(record.Data.NS.pNameHost));
                             break;
                         case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_CNAME:
-                            recordFound = new DnsCnameRecord(Marshal.PtrToStringAuto(record.Data.CNAME.pNameHost));
+                            recordBaseFound = new DnsCnameRecord(Marshal.PtrToStringAuto(record.Data.CNAME.pNameHost));
                             break;
                         case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_PTR:
-                            recordFound = new DnsPtrRecord(Marshal.PtrToStringAuto(record.Data.PTR.pNameHost));
+                            recordBaseFound = new DnsPtrRecord(Marshal.PtrToStringAuto(record.Data.PTR.pNameHost));
                             break;
                         case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_MX:
-                            recordFound = new DnsMxRecord(record.Data.MX.wPreference,
+                            recordBaseFound = new DnsMxRecord(record.Data.MX.wPreference,
                                 Marshal.PtrToStringAuto(record.Data.MX.pNameExchange));
                             break;
                         case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_TEXT:
@@ -78,14 +78,14 @@ namespace DnsApi
                             {
                                 stringList.Add(Marshal.PtrToStringAuto(record.Data.TXT.pStringArray + i));
                             }
-                            recordFound = new DnsTxtRecord(stringList.ToArray());
+                            recordBaseFound = new DnsTxtRecord(stringList.ToArray());
                             break;
                         case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_SRV:
-                            recordFound = new DnsSrvRecord(record.Data.SRV.uPriority, record.Data.SRV.wWeight,
+                            recordBaseFound = new DnsSrvRecord(record.Data.SRV.uPriority, record.Data.SRV.wWeight,
                                 Marshal.PtrToStringAuto(record.Data.SRV.pNameTarget), record.Data.SRV.wPort);
                             break;
                         case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_AAAA:
-                            recordFound = new DnsAaaaRecord(IPAddressHelpers.ConvertAAAAToIpAddress(record.Data.AAAA));
+                            recordBaseFound = new DnsAaaaRecord(IPAddressHelpers.ConvertAAAAToIpAddress(record.Data.AAAA));
                             break;
                         default:
                             continue;
@@ -93,7 +93,7 @@ namespace DnsApi
                     if (internalRecordType == PInvoke.DnsRecordTypes.DNS_TYPE_ANY ||
                         record.wType == (ushort) internalRecordType)
                     {
-                        recordsFound.Add(recordFound);
+                        recordsFound.Add(recordBaseFound);
                     }
                 }
             }
@@ -108,7 +108,7 @@ namespace DnsApi
             return (IList<T>)recordsFound;
         }
 
-        public IList<T> LookUp<T>(string name) where T : IDnsRecord
+        public static IList<T> LookUp<T>(string name) where T : DnsRecordBase
         {
             return LookUp<T>(name, false);
         }

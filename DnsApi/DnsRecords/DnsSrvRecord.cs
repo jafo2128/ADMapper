@@ -1,6 +1,6 @@
 ﻿namespace DnsApi.DnsRecords
 {
-    public class DnsSrvRecord : IDnsRecord
+    public class DnsSrvRecord : DnsRecordBase
     {
         public DnsSrvRecord(ushort priority, ushort weight, string nameTarget, ushort port)
         {
@@ -17,5 +17,10 @@
         public string NameTarget { get; private set; }
 
         public ushort Port { get; private set; }
+
+        public override string ToString()
+        {
+            return $"{Priority} {Weight} {NameTarget} {Port}";
+        }
     }
 }
