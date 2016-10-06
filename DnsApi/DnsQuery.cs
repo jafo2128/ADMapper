@@ -29,7 +29,7 @@ namespace DnsApi
             return PInvoke.DnsRecordTypes.DNS_TYPE_ANY;
         }
 
-        public IList<IDnsRecord> LookUp<T>(string name, bool bypassResolverCache) where T : IDnsRecord
+        public IList<T> LookUp<T>(string name, bool bypassResolverCache) where T : IDnsRecord
         {
 
             var internalRecordType = ResolveFromType(typeof(T));
@@ -40,7 +40,8 @@ namespace DnsApi
                     : PInvoke.DnsQueryOptions.DNS_QUERY_STANDARD, IntPtr.Zero, ref pResults, IntPtr.Zero);
             if (status != 0)
             {
-                throw new Win32Exception(status);
+                throw new DnsApiException($"Error resolving '{name}' from DNS with record type {internalRecordType}",
+                    new Win32Exception(status));
             }
 
             var recordsFound = new List<IDnsRecord>();
@@ -96,19 +97,18 @@ namespace DnsApi
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO:
-                throw;
+                throw new DnsApiException("Error parsing DNS response", ex);
             }
             finally
             {
                 PInvoke.DnsRecordListFree(pResults, 0);
             }
-            return recordsFound;
+            return (IList<T>)recordsFound;
         }
 
-        public IList<IDnsRecord> LookUp<T>(string name) where T : IDnsRecord
+        public IList<T> LookUp<T>(string name) where T : IDnsRecord
         {
             return LookUp<T>(name, false);
         }
