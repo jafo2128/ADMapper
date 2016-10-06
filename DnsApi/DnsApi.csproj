@@ -41,6 +41,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DnsQuery.cs" />
+    <Compile Include="DnsRecords\DnsAaaaRecord.cs" />
+    <Compile Include="DnsRecords\DnsARecord.cs" />
+    <Compile Include="DnsRecords\DnsCnameRecord.cs" />
+    <Compile Include="DnsRecords\DnsMxRecord.cs" />
+    <Compile Include="DnsRecords\DnsNsRecord.cs" />
+    <Compile Include="DnsRecords\DnsPtrRecord.cs" />
+    <Compile Include="DnsRecords\DnsSrvRecord.cs" />
+    <Compile Include="DnsRecords\DnsTxtRecord.cs" />
+    <Compile Include="DnsRecords\IDnsRecord.cs" />
     <Compile Include="IPAddressHelpers.cs" />
     <Compile Include="PInvoke.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

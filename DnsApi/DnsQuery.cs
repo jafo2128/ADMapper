@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using DnsApi.DnsRecords;
 
 namespace DnsApi
 {
@@ -24,9 +26,16 @@ namespace DnsApi
             return (PInvoke.DnsRecordTypes) t;
         }
 
-        public void LookUp(string name, RecordType recordType, bool bypassResolverCache)
+        private static PInvoke.DnsRecordTypes ResolveFromType(Type t)
         {
-            var internalRecordType = ConvertToCType(recordType);
+            // TODO:
+            return PInvoke.DnsRecordTypes.DNS_TYPE_A;
+        }
+
+        public IList<IDnsRecord> LookUp<T>(string name, bool bypassResolverCache) where T : IDnsRecord
+        {
+
+            var internalRecordType = ResolveFromType(typeof(T));
             var pResults = IntPtr.Zero;
             var status = PInvoke.DnsQuery(ref name, internalRecordType,
                 bypassResolverCache
@@ -37,41 +46,74 @@ namespace DnsApi
                 throw new Win32Exception(status);
             }
 
-            PInvoke.DNS_RECORD record;
-            for (var iterator = pResults; !iterator.Equals(IntPtr.Zero); iterator = record.pNext)
+            var recordsFound = new List<IDnsRecord>();
+            try
             {
-                record = (PInvoke.DNS_RECORD) Marshal.PtrToStructure(iterator, typeof (PInvoke.DNS_RECORD));
-                if (record.wType == (ushort)internalRecordType)
+                PInvoke.DNS_RECORD record;
+                for (var iterator = pResults; !iterator.Equals(IntPtr.Zero); iterator = record.pNext)
                 {
+                    record = (PInvoke.DNS_RECORD) Marshal.PtrToStructure(iterator, typeof (PInvoke.DNS_RECORD));
+                    IDnsRecord recordFound;
                     switch (record.wType)
                     {
-                        case (ushort)PInvoke.DnsRecordTypes.DNS_TYPE_A:
+                        case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_A:
+                            recordFound =
+                                new DnsARecord(IPAddressHelpers.ConvertUintToIpAddress(record.Data.A.IpAddress));
                             break;
-                        case (ushort)PInvoke.DnsRecordTypes.DNS_TYPE_NS:
+                        case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_NS:
+                            recordFound = new DnsNsRecord(Marshal.PtrToStringAuto(record.Data.NS.pNameHost));
                             break;
-                        case (ushort)PInvoke.DnsRecordTypes.DNS_TYPE_CNAME:
+                        case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_CNAME:
+                            recordFound = new DnsCnameRecord(Marshal.PtrToStringAuto(record.Data.CNAME.pNameHost));
                             break;
-                        case (ushort)PInvoke.DnsRecordTypes.DNS_TYPE_PTR:
+                        case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_PTR:
+                            recordFound = new DnsPtrRecord(Marshal.PtrToStringAuto(record.Data.PTR.pNameHost));
                             break;
-                        case (ushort)PInvoke.DnsRecordTypes.DNS_TYPE_MX:
+                        case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_MX:
+                            recordFound = new DnsMxRecord(record.Data.MX.wPreference,
+                                Marshal.PtrToStringAuto(record.Data.MX.pNameExchange));
                             break;
-                        case (ushort)PInvoke.DnsRecordTypes.DNS_TYPE_TEXT:
+                        case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_TEXT:
+                            var stringList = new List<string>();
+                            var count = record.Data.TXT.dwStringCount;
+                            for (var i = 0; i < count; i++)
+                            {
+                                stringList.Add(Marshal.PtrToStringAuto(record.Data.TXT.pStringArray + i));
+                            }
+                            recordFound = new DnsTxtRecord(stringList.ToArray());
                             break;
-                        case (ushort)PInvoke.DnsRecordTypes.DNS_TYPE_SRV:
+                        case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_SRV:
+                            recordFound = new DnsSrvRecord(record.Data.SRV.uPriority, record.Data.SRV.wWeight,
+                                Marshal.PtrToStringAuto(record.Data.SRV.pNameTarget), record.Data.SRV.wPort);
                             break;
-                        case (ushort)PInvoke.DnsRecordTypes.DNS_TYPE_AAAA:
+                        case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_AAAA:
+                            recordFound = new DnsAaaaRecord(IPAddressHelpers.ConvertAAAAToIpAddress(record.Data.AAAA));
                             break;
-                        case (ushort)PInvoke.DnsRecordTypes.DNS_TYPE_ANY:
-                            break;
+                        default:
+                            continue;
+                    }
+                    if (internalRecordType == PInvoke.DnsRecordTypes.DNS_TYPE_ANY ||
+                        record.wType == (ushort) internalRecordType)
+                    {
+                        recordsFound.Add(recordFound);
                     }
                 }
             }
-            PInvoke.DnsRecordListFree(pResults, 0);
+            catch (Exception)
+            {
+                // TODO:
+                throw;
+            }
+            finally
+            {
+                PInvoke.DnsRecordListFree(pResults, 0);
+            }
+            return recordsFound;
         }
 
-        public void LookUp(string name, RecordType type)
+        public IList<IDnsRecord> LookUp<T>(string name) where T : IDnsRecord
         {
-            LookUp(name, type, false);
+            return LookUp<T>(name, false);
         }
     }
 }
