@@ -8,28 +8,25 @@ namespace DnsApi
 {
     public class DnsQuery
     {
-        public enum RecordType
-        {
-            ARecord = 0x1,
-            NsRecord = 0x2,
-            CnameRecord = 0x5,
-            PtrRecord = 0xc,
-            MxRecord = 0xf,
-            TxtRecord = 0x10,
-            SrvRecord = 0x21,
-            AaaaRecord = 0x1c,
-            AnyRecord = 0xff
-        }
-
-        private static PInvoke.DnsRecordTypes ConvertToCType(RecordType t)
-        {
-            return (PInvoke.DnsRecordTypes) t;
-        }
-
         private static PInvoke.DnsRecordTypes ResolveFromType(Type t)
         {
-            // TODO:
-            return PInvoke.DnsRecordTypes.DNS_TYPE_A;
+            if (t == typeof(DnsARecord))
+                return PInvoke.DnsRecordTypes.DNS_TYPE_A;
+            if (t == typeof(DnsNsRecord))
+                return PInvoke.DnsRecordTypes.DNS_TYPE_NS;
+            if (t == typeof(DnsCnameRecord))
+                return PInvoke.DnsRecordTypes.DNS_TYPE_CNAME;
+            if (t == typeof(DnsPtrRecord))
+                return PInvoke.DnsRecordTypes.DNS_TYPE_PTR;
+            if (t == typeof(DnsMxRecord))
+                return PInvoke.DnsRecordTypes.DNS_TYPE_MX;
+            if (t == typeof(DnsTxtRecord))
+                return PInvoke.DnsRecordTypes.DNS_TYPE_TEXT;
+            if (t == typeof(DnsSrvRecord))
+                return PInvoke.DnsRecordTypes.DNS_TYPE_SRV;
+            if (t == typeof(DnsAaaaRecord))
+                return PInvoke.DnsRecordTypes.DNS_TYPE_AAAA;
+            return PInvoke.DnsRecordTypes.DNS_TYPE_ANY;
         }
 
         public IList<IDnsRecord> LookUp<T>(string name, bool bypassResolverCache) where T : IDnsRecord
