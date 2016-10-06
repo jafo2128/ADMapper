@@ -1,8 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Security.AccessControl;
-using DnsApi.PAB.DnsUtils;
 
 namespace DnsApi
 {
