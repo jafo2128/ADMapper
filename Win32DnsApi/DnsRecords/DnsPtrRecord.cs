@@ -1,8 +1,8 @@
-﻿namespace DnsApi.DnsRecords
+﻿namespace Win32DnsApi.DnsRecords
 {
-    public class DnsNsRecord : DnsRecordBase
+    public class DnsPtrRecord : DnsRecordBase
     {
-        public DnsNsRecord(string nameHost)
+        public DnsPtrRecord(string nameHost)
         {
             NameHost = nameHost;
         }

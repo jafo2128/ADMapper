@@ -54,9 +54,9 @@
       <Project>{9d3f6286-0858-4ae7-98ab-b1022df43e55}</Project>
       <Name>CLDAP.NET</Name>
     </ProjectReference>
-    <ProjectReference Include="DnsApi\DnsApi.csproj">
+    <ProjectReference Include="Win32DnsApi\Win32DnsApi.csproj">
       <Project>{ab311bd5-9008-40ab-81d1-a58dbb707928}</Project>
-      <Name>DnsApi</Name>
+      <Name>Win32DnsApi</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

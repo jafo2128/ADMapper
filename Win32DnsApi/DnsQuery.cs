@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.InteropServices;
-using DnsApi.DnsRecords;
+using Win32DnsApi.DnsRecords;
 
-namespace DnsApi
+namespace Win32DnsApi
 {
     public static class DnsQuery
     {
@@ -31,13 +32,21 @@ namespace DnsApi
 
         public static IList<T> LookUp<T>(string name, bool bypassResolverCache) where T : DnsRecordBase
         {
-
+            if (Environment.OSVersion.Platform != PlatformID.Win32NT)
+            {
+                throw new DnsApiException($"Platform '{Environment.OSVersion.Platform}' not supported",
+                    new NotSupportedException());
+            }
             var internalRecordType = ResolveFromType(typeof(T));
             var pResults = IntPtr.Zero;
             var status = PInvoke.DnsQuery(ref name, internalRecordType,
                 bypassResolverCache
                     ? PInvoke.DnsQueryOptions.DNS_QUERY_BYPASS_CACHE
                     : PInvoke.DnsQueryOptions.DNS_QUERY_STANDARD, IntPtr.Zero, ref pResults, IntPtr.Zero);
+            if (status == 9501) // DNS_INFO_NO_RECORDS
+            {
+                return new List<T>();
+            }
             if (status != 0)
             {
                 throw new DnsApiException($"Error resolving '{name}' from DNS with record type {internalRecordType}",
@@ -105,7 +114,7 @@ namespace DnsApi
             {
                 PInvoke.DnsRecordListFree(pResults, 0);
             }
-            return (IList<T>)recordsFound;
+            return recordsFound.Cast<T>().ToList();
         }
 
         public static IList<T> LookUp<T>(string name) where T : DnsRecordBase

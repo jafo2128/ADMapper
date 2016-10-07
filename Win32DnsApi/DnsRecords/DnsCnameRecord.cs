@@ -1,6 +1,6 @@
-﻿namespace DnsApi.DnsRecords
+﻿namespace Win32DnsApi.DnsRecords
 {
-    class DnsCnameRecord : DnsRecordBase
+    public class DnsCnameRecord : DnsRecordBase
     {
         public DnsCnameRecord(string nameHost)
         {

@@ -7,8 +7,8 @@
     <ProjectGuid>{AB311BD5-9008-40AB-81D1-A58DBB707928}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DnsApi</RootNamespace>
-    <AssemblyName>DnsApi</AssemblyName>
+    <RootNamespace>Win32DnsApi</RootNamespace>
+    <AssemblyName>Win32DnsApi</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

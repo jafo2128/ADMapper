@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using DnsApi;
-using DnsApi.DnsRecords;
+using Win32DnsApi;
+using Win32DnsApi.DnsRecords;
 
 namespace ADMapper
 {
@@ -23,32 +23,32 @@ namespace ADMapper
                 PrintUsage();
             }
             IList<DnsRecordBase> records;
-            Console.WriteLine("Executing query for name '{args[1]}' record type '{args[0]}':");
+            Console.WriteLine($"Executing query for name '{args[1]}' record type '{args[0]}':");
             switch (args[0])
             {
                 case "a":
-                    records = (IList<DnsRecordBase>) DnsQuery.LookUp<DnsARecord>(args[1]);
+                    records = DnsQuery.LookUp<DnsARecord>(args[1]).Cast<DnsRecordBase>().ToList();
                     break;
                 case "aaaa":
-                    records = (IList<DnsRecordBase>)DnsQuery.LookUp<DnsARecord>(args[1]);
+                    records = DnsQuery.LookUp<DnsAaaaRecord>(args[1]).Cast<DnsRecordBase>().ToList();
                     break;
                 case "srv":
-                    records = (IList<DnsRecordBase>)DnsQuery.LookUp<DnsARecord>(args[1]);
+                    records = DnsQuery.LookUp<DnsSrvRecord>(args[1]).Cast<DnsRecordBase>().ToList();
                     break;
                 case "txt":
-                    records = (IList<DnsRecordBase>)DnsQuery.LookUp<DnsARecord>(args[1]);
+                    records = DnsQuery.LookUp<DnsTxtRecord>(args[1]).Cast<DnsRecordBase>().ToList();
                     break;
                 case "ns":
-                    records = (IList<DnsRecordBase>)DnsQuery.LookUp<DnsARecord>(args[1]);
+                    records = DnsQuery.LookUp<DnsNsRecord>(args[1]).Cast<DnsRecordBase>().ToList();
                     break;
                 case "mx":
-                    records = (IList<DnsRecordBase>)DnsQuery.LookUp<DnsARecord>(args[1]);
+                    records = DnsQuery.LookUp<DnsMxRecord>(args[1]).Cast<DnsRecordBase>().ToList();
                     break;
                 case "cname":
-                    records = (IList<DnsRecordBase>)DnsQuery.LookUp<DnsARecord>(args[1]);
+                    records = DnsQuery.LookUp<DnsCnameRecord>(args[1]).Cast<DnsRecordBase>().ToList();
                     break;
                 case "ptr":
-                    records = (IList<DnsRecordBase>)DnsQuery.LookUp<DnsARecord>(args[1]);
+                    records = DnsQuery.LookUp<DnsPtrRecord>(args[1]).Cast<DnsRecordBase>().ToList();
                     break;
                 case "any":
                     records = DnsQuery.LookUp<DnsRecordBase>(args[1]);
@@ -57,6 +57,8 @@ namespace ADMapper
                     PrintUsage();
                     return;
             }
+            if (!records.Any())
+                Console.WriteLine("  no records");
             foreach (var record in records)
             {
                 Console.WriteLine($"  {record}");

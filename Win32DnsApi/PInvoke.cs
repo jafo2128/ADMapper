@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+
 // ReSharper disable InconsistentNaming
 
-namespace DnsApi
+namespace Win32DnsApi
 {
     // Thanks to pinvoke.net for the code to call into DnsQuery from .NET
     // http://www.pinvoke.net/default.aspx/dnsapi.dnsquery
@@ -19,8 +20,10 @@ namespace DnsApi
         /// <param name="ppQueryResultsSet">A pointer to a pointer that points to the list of RRs that comprise the response</param>
         /// <param name="pReserved">Reserved for future use and must be set to NULL</param>
         /// <returns>Success (0), or the DNS-specific error defined in Winerror.h</returns>
-        [DllImport("dnsapi", EntryPoint = "DnsQuery_W", CharSet = CharSet.Unicode, SetLastError = true, ExactSpelling = true)]
-        public static extern int DnsQuery([MarshalAs(UnmanagedType.VBByRefStr)] ref string lpstrName, DnsRecordTypes wType, DnsQueryOptions Options, IntPtr pExtra, ref IntPtr ppQueryResultsSet, IntPtr pReserved);
+        [DllImport("dnsapi", EntryPoint = "DnsQuery_W", CharSet = CharSet.Unicode, SetLastError = true,
+            ExactSpelling = true)]
+        public static extern int DnsQuery([MarshalAs(UnmanagedType.VBByRefStr)] ref string lpstrName,
+            DnsRecordTypes wType, DnsQueryOptions Options, IntPtr pExtra, ref IntPtr ppQueryResultsSet, IntPtr pReserved);
 
         /// <summary>
         /// Frees memory allocated for DNS records obtained by using the DnsQuery function

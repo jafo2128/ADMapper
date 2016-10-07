@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace DnsApi.DnsRecords
+namespace Win32DnsApi.DnsRecords
 {
     public class DnsARecord : DnsRecordBase
     {

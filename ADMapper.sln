@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ADMapper", "ADMapper.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLDAP.NET", "CLDAP.NET\CLDAP.NET.csproj", "{9D3F6286-0858-4AE7-98AB-B1022DF43E55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DnsApi", "DnsApi\DnsApi.csproj", "{AB311BD5-9008-40AB-81D1-A58DBB707928}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Win32DnsApi", "Win32DnsApi\Win32DnsApi.csproj", "{AB311BD5-9008-40AB-81D1-A58DBB707928}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

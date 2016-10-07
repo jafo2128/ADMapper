@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace DnsApi
+namespace Win32DnsApi
 {
     [Serializable]
     public class DnsApiException : Exception

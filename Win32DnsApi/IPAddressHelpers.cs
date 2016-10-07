@@ -1,7 +1,8 @@
 ﻿using System.Net;
+
 // ReSharper disable InconsistentNaming
 
-namespace DnsApi
+namespace Win32DnsApi
 {
     internal static class IPAddressHelpers
     {
@@ -17,10 +18,10 @@ namespace DnsApi
             // Network byte order (what the IPAddress object requires) is big endian
             // Ex - 0x7F000001 is 127.0.0.1
             var addressBytes = new byte[4];
-            addressBytes[0] = (byte)((ipAddress & 0xFF000000u) >> 24);
-            addressBytes[1] = (byte)((ipAddress & 0x00FF0000u) >> 16);
-            addressBytes[2] = (byte)((ipAddress & 0x0000FF00u) >> 8);
-            addressBytes[3] = (byte)(ipAddress & 0x000000FFu);
+            addressBytes[3] = (byte)((ipAddress & 0xFF000000u) >> 24);
+            addressBytes[2] = (byte)((ipAddress & 0x00FF0000u) >> 16);
+            addressBytes[1] = (byte)((ipAddress & 0x0000FF00u) >> 8);
+            addressBytes[0] = (byte)(ipAddress & 0x000000FFu);
             return new IPAddress(addressBytes);
         }
 
