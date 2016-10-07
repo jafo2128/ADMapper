@@ -1,4 +1,6 @@
-﻿namespace Win32DnsApi.DnsRecords
+﻿using System.Linq;
+
+namespace Win32DnsApi.DnsRecords
 {
     public class DnsTxtRecord : DnsRecordBase
     {
@@ -11,7 +13,7 @@
 
         public override string ToString()
         {
-            return string.Join(";", StringArray);
+            return string.Join(" ", StringArray.Select(s => $"'{s}'"));
         }
     }
 }

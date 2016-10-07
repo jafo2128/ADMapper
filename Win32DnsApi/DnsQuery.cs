@@ -83,12 +83,21 @@ namespace Win32DnsApi
                         case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_TEXT:
                             var stringList = new List<string>();
                             var count = record.Data.TXT.dwStringCount;
+                            // The Data.TXT union only allows access to one string
+                            // There has to be an easier way to do this... 
+                            var structSize = Marshal.SizeOf(record.Data);
+                            var structBytes = new byte[structSize];
+                            var structPtr = Marshal.AllocHGlobal(structSize);
+                            Marshal.StructureToPtr(record.Data, structPtr, true);
+                            Marshal.Copy(structPtr, structBytes, 0, structSize);
                             for (var i = 0; i < count; i++)
                             {
-                                var strPtr = IntPtr.Add(record.Data.TXT.pStringArray, i*4);
-                                var str = Marshal.PtrToStringAuto(strPtr);
-                                stringList.Add(str);
+                                var strPtr = IntPtr.Size == 4
+                                    ? new IntPtr(BitConverter.ToInt32(structBytes, 4 + i*IntPtr.Size))
+                                    : new IntPtr(BitConverter.ToInt64(structBytes, 4 + i*IntPtr.Size));
+                                stringList.Add(Marshal.PtrToStringAuto(strPtr));
                             }
+                            Marshal.FreeHGlobal(structPtr);
                             recordBaseFound = new DnsTxtRecord(stringList.ToArray());
                             break;
                         case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_SRV:
