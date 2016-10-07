@@ -85,7 +85,9 @@ namespace Win32DnsApi
                             var count = record.Data.TXT.dwStringCount;
                             for (var i = 0; i < count; i++)
                             {
-                                stringList.Add(Marshal.PtrToStringAuto(record.Data.TXT.pStringArray + i));
+                                var strPtr = IntPtr.Add(record.Data.TXT.pStringArray, i*4);
+                                var str = Marshal.PtrToStringAuto(strPtr);
+                                stringList.Add(str);
                             }
                             recordBaseFound = new DnsTxtRecord(stringList.ToArray());
                             break;
