@@ -6,21 +6,29 @@ using Win32DnsApi.DnsRecords;
 
 namespace ADMapper
 {
-    class Program
+    internal class Program
     {
-        static private void PrintUsage()
+        private static void PrintDnsUsage()
         {
             Console.WriteLine("TODO: Change usage...currently used to test DNS only");
-            Console.WriteLine("ADMapper <rectype> <name>");
+            Console.WriteLine("ADMapper dns <rectype> <name>");
             Console.WriteLine("  <rectype>  a, aaaa, srv, txt, ns, mx, cname, ptr, any");
             Environment.Exit(1);
         }
 
-        static void Main(string[] args)
+        private static void PrintUsage()
+        {
+            Console.WriteLine("TODO: Change usage...curently used to test");
+            Console.WriteLine("ADMapper <command> <args>");
+            Console.WriteLine("  <command>  dns, cldapping, map");
+            Environment.Exit(1);
+        }
+
+        private static void HandleDns(string[] args)
         {
             if (args.Count() < 2)
             {
-                PrintUsage();
+                PrintDnsUsage();
             }
             IList<DnsRecordBase> records;
             Console.WriteLine($"Executing query for name '{args[1]}' record type '{args[0]}':");
@@ -54,7 +62,7 @@ namespace ADMapper
                     records = DnsQuery.LookUp<DnsRecordBase>(args[1]);
                     break;
                 default:
-                    PrintUsage();
+                    PrintDnsUsage();
                     return;
             }
             if (!records.Any())
@@ -62,6 +70,39 @@ namespace ADMapper
             foreach (var record in records)
             {
                 Console.WriteLine($"  {record}");
+            }
+        }
+
+        private static void HandleCldapping(string[] args)
+        {
+            
+        }
+
+        private static void HandleMap(string[] args)
+        {
+            
+        }
+
+        private static void Main(string[] args)
+        {
+            if (!args.Any())
+            {
+                PrintUsage();
+            }
+            switch (args[0])
+            {
+                case "dns":
+                    HandleDns(args.Skip(1).ToArray());
+                    break;
+                case "cldapping":
+                    HandleCldapping(args.Skip(1).ToArray());
+                    break;
+                case "map":
+                    HandleMap(args.Skip(1).ToArray());
+                    break;
+                default:
+                    PrintUsage();
+                    break; nj
             }
         }
     }
