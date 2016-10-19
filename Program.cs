@@ -102,7 +102,7 @@ namespace ADMapper
                     break;
                 default:
                     PrintUsage();
-                    break; nj
+                    break;
             }
         }
     }
