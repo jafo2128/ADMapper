@@ -27,6 +27,8 @@ namespace Win32DnsApi
                 return PInvoke.DnsRecordTypes.DNS_TYPE_SRV;
             if (t == typeof(DnsAaaaRecord))
                 return PInvoke.DnsRecordTypes.DNS_TYPE_AAAA;
+            if (t == typeof(DnsSoaRecord))
+                return PInvoke.DnsRecordTypes.DNS_TYPE_SOA;
             return PInvoke.DnsRecordTypes.DNS_TYPE_ANY;
         }
 
@@ -106,6 +108,13 @@ namespace Win32DnsApi
                             break;
                         case (ushort) PInvoke.DnsRecordTypes.DNS_TYPE_AAAA:
                             recordBaseFound = new DnsAaaaRecord(IPAddressHelpers.ConvertAAAAToIpAddress(record.Data.AAAA));
+                            break;
+                        case (ushort)PInvoke.DnsRecordTypes.DNS_TYPE_SOA:
+                            recordBaseFound =
+                                new DnsSoaRecord(Marshal.PtrToStringAuto(record.Data.SOA.pNamePrimaryServer),
+                                    Marshal.PtrToStringAuto(record.Data.SOA.pNameAdministrator),
+                                    record.Data.SOA.dwSerialNo, record.Data.SOA.dwRefresh, record.Data.SOA.dwRetry,
+                                    record.Data.SOA.dwExpire, record.Data.SOA.dwDefaultTtl);
                             break;
                         default:
                             continue;

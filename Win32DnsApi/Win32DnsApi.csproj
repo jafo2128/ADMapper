@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="DnsApiException.cs" />
     <Compile Include="DnsQuery.cs" />
+    <Compile Include="DnsRecords\DnsSoaRecord.cs" />
     <Compile Include="DnsRecords\DnsAaaaRecord.cs" />
     <Compile Include="DnsRecords\DnsARecord.cs" />
     <Compile Include="DnsRecords\DnsCnameRecord.cs" />

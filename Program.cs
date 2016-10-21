@@ -58,6 +58,9 @@ namespace ADMapper
                 case "ptr":
                     records = DnsQuery.LookUp<DnsPtrRecord>(args[1]).Cast<DnsRecordBase>().ToList();
                     break;
+                case "soa":
+                    records = DnsQuery.LookUp<DnsSoaRecord>(args[1]).Cast<DnsRecordBase>().ToList();
+                    break;
                 case "any":
                     records = DnsQuery.LookUp<DnsRecordBase>(args[1]);
                     break;
