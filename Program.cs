@@ -30,49 +30,56 @@ namespace ADMapper
             {
                 PrintDnsUsage();
             }
-            IList<DnsRecordBase> records;
-            Console.WriteLine($"Executing query for name '{args[1]}' record type '{args[0]}':");
-            switch (args[0])
+            try
             {
-                case "a":
-                    records = DnsQuery.LookUp<DnsARecord>(args[1]).Cast<DnsRecordBase>().ToList();
-                    break;
-                case "aaaa":
-                    records = DnsQuery.LookUp<DnsAaaaRecord>(args[1]).Cast<DnsRecordBase>().ToList();
-                    break;
-                case "srv":
-                    records = DnsQuery.LookUp<DnsSrvRecord>(args[1]).Cast<DnsRecordBase>().ToList();
-                    break;
-                case "txt":
-                    records = DnsQuery.LookUp<DnsTxtRecord>(args[1]).Cast<DnsRecordBase>().ToList();
-                    break;
-                case "ns":
-                    records = DnsQuery.LookUp<DnsNsRecord>(args[1]).Cast<DnsRecordBase>().ToList();
-                    break;
-                case "mx":
-                    records = DnsQuery.LookUp<DnsMxRecord>(args[1]).Cast<DnsRecordBase>().ToList();
-                    break;
-                case "cname":
-                    records = DnsQuery.LookUp<DnsCnameRecord>(args[1]).Cast<DnsRecordBase>().ToList();
-                    break;
-                case "ptr":
-                    records = DnsQuery.LookUp<DnsPtrRecord>(args[1]).Cast<DnsRecordBase>().ToList();
-                    break;
-                case "soa":
-                    records = DnsQuery.LookUp<DnsSoaRecord>(args[1]).Cast<DnsRecordBase>().ToList();
-                    break;
-                case "any":
-                    records = DnsQuery.LookUp<DnsRecordBase>(args[1]);
-                    break;
-                default:
-                    PrintDnsUsage();
-                    return;
+                IList<DnsRecordBase> records;
+                Console.WriteLine($"Executing query for name '{args[1]}' record type '{args[0]}':");
+                switch (args[0])
+                {
+                    case "a":
+                        records = DnsQuery.LookUp<DnsARecord>(args[1]).Cast<DnsRecordBase>().ToList();
+                        break;
+                    case "aaaa":
+                        records = DnsQuery.LookUp<DnsAaaaRecord>(args[1]).Cast<DnsRecordBase>().ToList();
+                        break;
+                    case "srv":
+                        records = DnsQuery.LookUp<DnsSrvRecord>(args[1]).Cast<DnsRecordBase>().ToList();
+                        break;
+                    case "txt":
+                        records = DnsQuery.LookUp<DnsTxtRecord>(args[1]).Cast<DnsRecordBase>().ToList();
+                        break;
+                    case "ns":
+                        records = DnsQuery.LookUp<DnsNsRecord>(args[1]).Cast<DnsRecordBase>().ToList();
+                        break;
+                    case "mx":
+                        records = DnsQuery.LookUp<DnsMxRecord>(args[1]).Cast<DnsRecordBase>().ToList();
+                        break;
+                    case "cname":
+                        records = DnsQuery.LookUp<DnsCnameRecord>(args[1]).Cast<DnsRecordBase>().ToList();
+                        break;
+                    case "ptr":
+                        records = DnsQuery.LookUp<DnsPtrRecord>(args[1]).Cast<DnsRecordBase>().ToList();
+                        break;
+                    case "soa":
+                        records = DnsQuery.LookUp<DnsSoaRecord>(args[1]).Cast<DnsRecordBase>().ToList();
+                        break;
+                    case "any":
+                        records = DnsQuery.LookUp<DnsRecordBase>(args[1]);
+                        break;
+                    default:
+                        PrintDnsUsage();
+                        return;
+                }
+                if (!records.Any())
+                    Console.WriteLine("  no records");
+                foreach (var record in records)
+                {
+                    Console.WriteLine($"  {record}");
+                }
             }
-            if (!records.Any())
-                Console.WriteLine("  no records");
-            foreach (var record in records)
+            catch (Exception ex)
             {
-                Console.WriteLine($"  {record}");
+                Console.WriteLine($"  ERROR: {ex.Message}");
             }
         }
 
