@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net;
-
-namespace Win32DnsApi.DnsRecords
+﻿namespace Win32DnsApi.DnsRecords
 {
     public class DnsSoaRecord : DnsRecordBase
     {
