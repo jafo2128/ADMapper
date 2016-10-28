@@ -1,6 +1,5 @@
 ﻿using System;
 using System.DirectoryServices.Protocols;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -30,12 +29,10 @@ namespace CLDAP.NET
                 new byte[] {0x06, 0x00, 0x00, 0x00}, // assertionValue (Octet String: DWORD=6 encoded backwards)
                 // attributes, encoded as SEQUENCE
                 Encoding.ASCII.GetBytes("Netlogon")); // attributeSelector (Octet String)
-            // Tagging -- I'm not sure how to specify an Application or Context-Specific tag with BerConverter
-            //            This solution is terrible, because a length octet of 48 or 0x30 can break everything...
             return buf;
         }
 
-        public static string Ping(string dnsName, IPAddress ipAddress, int port)
+        public static ServerInformation Ping(string dnsName, IPAddress ipAddress, int port)
         {
             var cldapPing = GetCldapPingRequest(dnsName);
 
@@ -45,18 +42,14 @@ namespace CLDAP.NET
                 udpClient.Send(cldapPing, cldapPing.Length);
                 var remoteIpEndPoint = new IPEndPoint(ipAddress, 0);
                 udpClient.Client.ReceiveTimeout = 10000; // 10 sec
-                try
+                var buf = udpClient.Receive(ref remoteIpEndPoint);
+                var objs = BerConverter.Decode("{x{x{{x[O]}}}", buf);
+                if (objs == null || objs.Length < 1 || objs[0] == null)
                 {
-                    var buf = udpClient.Receive(ref remoteIpEndPoint);
-
-                    var objs = BerConverter.Decode("{i{O{{O[O]}}}", buf);
-
-                    return BitConverter.ToString(buf).ToLower().Replace('-', ' ');
+                    throw new Exception("Bad response from CLDAP ping");
                 }
-                catch (Exception ex)
-                {
-                    return "";
-                }
+                return NetlogonResponseDecoder.Decode((byte[])objs[0]);
+
             }
         }
     }
