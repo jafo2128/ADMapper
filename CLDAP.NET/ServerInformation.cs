@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace CLDAP.NET
@@ -33,6 +34,12 @@ namespace CLDAP.NET
             stringBuilder.AppendLine($"Domain DNS Name:      {DnsDomainName}");
             stringBuilder.AppendLine($"NetBIOS Domain Name:  {NetbiosDomainName}");
             stringBuilder.AppendLine($"NetBIOS Server Name:  {NetbiosComputerName}");
+            stringBuilder.AppendLine($"Server Site Name:     {DcSiteName}");
+            stringBuilder.AppendLine($"Client Site Name:     {ClientSiteName}");
+            stringBuilder.AppendLine($"Server Flags:         {Flags}");
+            stringBuilder.AppendLine($"WS2003R2+:            {IsWindows2003R2OrAbove}");
+            stringBuilder.AppendLine($"WS2008R2+:            {IsWindows2008R2OrAbove}");
+            stringBuilder.AppendLine($"WS2012R2+:            {IsWindows2012R2OrAbove}");
             return stringBuilder.ToString();
         }
 
@@ -44,7 +51,28 @@ namespace CLDAP.NET
         public string NetbiosComputerName { get; set; }
         public string DcSiteName { get; set; }
         public string ClientSiteName { get; set; }
+
         // Server Properties
+        public string Flags
+        {
+            get
+            {
+                var strings = new List<string>();
+                if (IsPrimaryDomainController) strings.Add("PDC");
+                if (IsGlobalCatalog) strings.Add("GC");
+                if (IsDomainController) strings.Add("DC");
+                if (IsLdapServer) strings.Add("LDAP");
+                if (IsKeyDistributionCenter) strings.Add("KDC");
+                if (IsInClientSite) strings.Add("IN_SITE");
+                if (IsWritable) strings.Add("WRITABLE");
+                if (IsReadOnly) strings.Add("READ_ONLY");
+                if (IsTimeServer) strings.Add("TIME_SERV");
+                if (IsGoodTimeServer) strings.Add("GOOD_TIME_SRV");
+                if (HasActiveDirectoryWebService) strings.Add("WEB_SERVICE");
+                return string.Join(" ", strings);
+            }
+        }
+
         private bool CheckFlag(DS_FLAG dsFlag)
         {
             return (_flags & (uint)dsFlag) != 0;
