@@ -32,7 +32,7 @@ namespace CLDAP.NET
             return buf;
         }
 
-        public static ServerInformation Ping(string dnsName, IPAddress ipAddress, int port)
+        public static PingResponse Ping(string dnsName, IPAddress ipAddress, int port)
         {
             var cldapPing = GetCldapPingRequest(dnsName);
 

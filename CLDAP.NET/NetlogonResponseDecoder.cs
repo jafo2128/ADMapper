@@ -69,7 +69,8 @@ namespace CLDAP.NET
         public GUID DomainGuid;
     }
 
-    // RFC 1035 compressed strings go here
+    // RFC 1035 compressed strings go between header and footer
+    // See RFC 1035 4.1.4
     // See [MS-ADTS] 6.3.7
     //  DnsForestName
     //  DnsDomainName
@@ -80,6 +81,7 @@ namespace CLDAP.NET
     //  DcSiteName
     //  ClientSiteName
     //  NextClosestSiteName (Included only if NETLOGON_NT_VERSION_WITH_CLOSEST_SITE is used)
+
     [StructLayout(LayoutKind.Sequential)]
     internal struct NETLOGON_SAM_LOGON_RESPONSE_EX_FOOTER
     {
@@ -110,8 +112,6 @@ namespace CLDAP.NET
                 Marshal.FreeHGlobal(objPtr);
             }
         }
-
-        
 
         private static string[] DecodeCompressedStrings(byte[] buf)
         {
@@ -166,7 +166,7 @@ namespace CLDAP.NET
             return strings.ToArray();
         }
 
-        public static ServerInformation Decode(byte[] buf)
+        public static PingResponse Decode(byte[] buf)
         {
             var header = DecodeStruct<NETLOGON_SAM_LOGON_RESPONSE_EX_HEADER>(buf);
             var strings = DecodeCompressedStrings(buf);
@@ -174,7 +174,7 @@ namespace CLDAP.NET
                 DecodeStruct<NETLOGON_SAM_LOGON_RESPONSE_EX_FOOTER>(
                     buf.Skip(buf.Length - Marshal.SizeOf(typeof(NETLOGON_SAM_LOGON_RESPONSE_EX_FOOTER))).ToArray());
             var serverInformation =
-                new ServerInformation(
+                new PingResponse(
                     new Guid(header.DomainGuid.a, header.DomainGuid.b, header.DomainGuid.c, header.DomainGuid.d),
                     header.Flags, strings);
             if ((footer.NtVersion & 0x04) == 0 || footer.LmNtToken != 0xffff || footer.Lm20Token != 0xffff)

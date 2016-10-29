@@ -36,7 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cldap.cs" />
-    <Compile Include="ServerInformation.cs" />
+    <Compile Include="PingResponse.cs" />
     <Compile Include="NetlogonResponseDecoder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

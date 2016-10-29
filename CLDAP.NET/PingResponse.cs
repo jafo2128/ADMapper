@@ -4,11 +4,11 @@ using System.Text;
 
 namespace CLDAP.NET
 {
-    public class ServerInformation
+    public class PingResponse
     {
         private readonly uint _flags = 0;
 
-        public ServerInformation(Guid domainGuid, uint flags, string[] strings)
+        public PingResponse(Guid domainGuid, uint flags, string[] strings)
         {
             _flags = flags;
             DomainGuid = domainGuid;
