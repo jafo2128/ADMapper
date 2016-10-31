@@ -132,13 +132,13 @@ namespace CLDAP.NET
                 {
                     if (startIndex + 1 >= endIndex)
                     {
-                        throw new Exception("TODO: Bad encoding on string ptr...");
+                        throw new CldapException("Bad encoding of RFC 1035 string pointer");
                     }
                     var ptr = (int)buf[startIndex + 1];
                     var labelIndex = labels.IndexOfKey(ptr);
                     if (labelIndex == -1)
                     {
-                        throw new Exception("TODO: Bad encoded value on string ptr...");
+                        throw new CldapException("Bad encoding of value of RFC 1035 string pointer");
                     }
                     var ptrStr =
                         labels.Skip(labelIndex)
@@ -155,7 +155,7 @@ namespace CLDAP.NET
                     var sz = (int)buf[startIndex];
                     if (startIndex + 1 + sz >= endIndex)
                     {
-                        throw new Exception("TODO: Bad encoding on string label...");
+                        throw new CldapException("Bad encoding of RFC 1035 string label");
                     }
                     var label = Encoding.UTF8.GetString(buf.Skip(startIndex + 1).Take(sz).ToArray());
                     labels.Add(startIndex, label);
@@ -179,7 +179,8 @@ namespace CLDAP.NET
                     header.Flags, strings);
             if ((footer.NtVersion & 0x04) == 0 || footer.LmNtToken != 0xffff || footer.Lm20Token != 0xffff)
             {
-                throw new Exception("TODO: Parsing failed...");
+                throw new CldapException(
+                    $"CLDAP ping response contained unexpected final values {footer.NtVersion}, {footer.LmNtToken}, {footer.Lm20Token}");
             }
             return serverInformation;
         }

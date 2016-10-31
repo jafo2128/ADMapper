@@ -35,21 +35,27 @@ namespace CLDAP.NET
         public static PingResponse Ping(string dnsName, IPAddress ipAddress, int port)
         {
             var cldapPing = GetCldapPingRequest(dnsName);
-
             using (var udpClient = new UdpClient())
             {
-                udpClient.Connect(ipAddress, port);
-                udpClient.Send(cldapPing, cldapPing.Length);
-                var remoteIpEndPoint = new IPEndPoint(ipAddress, 0);
-                udpClient.Client.ReceiveTimeout = 10000; // 10 sec
-                var buf = udpClient.Receive(ref remoteIpEndPoint);
-                var objs = BerConverter.Decode("{x{x{{x[O]}}}", buf);
+                object[] objs;
+                try
+                {
+                    udpClient.Connect(ipAddress, port);
+                    udpClient.Send(cldapPing, cldapPing.Length);
+                    var remoteIpEndPoint = new IPEndPoint(ipAddress, 0);
+                    udpClient.Client.ReceiveTimeout = 10000; // 10 sec
+                    var buf = udpClient.Receive(ref remoteIpEndPoint);
+                    objs = BerConverter.Decode("{x{x{{x[O]}}}", buf);
+                }
+                catch (Exception ex)
+                {
+                    throw new CldapException("Failed to receive and decode CLDAP ping response", ex);
+                }
                 if (objs == null || objs.Length < 1 || objs[0] == null)
                 {
-                    throw new Exception("Bad response from CLDAP ping");
+                    throw new CldapException("Decoded CLDAP ping response gave unexpected result");
                 }
                 return NetlogonResponseDecoder.Decode((byte[])objs[0]);
-
             }
         }
     }

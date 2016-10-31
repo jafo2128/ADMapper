@@ -14,7 +14,8 @@ namespace CLDAP.NET
             DomainGuid = domainGuid;
             if (strings.Length < 8)
             {
-                throw new Exception("TODO: unexpected server length");
+                throw new CldapException(
+                    $"CLDAP ping response contained {strings.Length} RFC 1035 encoded strings instead of expected 8");
             }
             DnsForestName = strings[0];
             DnsDomainName = strings[1];
