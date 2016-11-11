@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CLDAP.NET", "CLDAP.NET\CLDA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Win32DnsApi", "Win32DnsApi\Win32DnsApi.csproj", "{AB311BD5-9008-40AB-81D1-A58DBB707928}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ADLocator", "ADLocator\ADLocator.csproj", "{966DE9DA-D3B9-432F-9E45-B494DCF52E4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{AB311BD5-9008-40AB-81D1-A58DBB707928}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB311BD5-9008-40AB-81D1-A58DBB707928}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB311BD5-9008-40AB-81D1-A58DBB707928}.Release|Any CPU.Build.0 = Release|Any CPU
+		{966DE9DA-D3B9-432F-9E45-B494DCF52E4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{966DE9DA-D3B9-432F-9E45-B494DCF52E4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{966DE9DA-D3B9-432F-9E45-B494DCF52E4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{966DE9DA-D3B9-432F-9E45-B494DCF52E4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
